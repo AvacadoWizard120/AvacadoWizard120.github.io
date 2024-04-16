@@ -1,4 +1,5 @@
-const gridContainer = document.getElementById('gridContainer');
+const gridContainerTop = document.getElementById('gridContainerTop');
+const gridContainerBottom = document.getElementById('gridContainerBottom');
 
 fetch('maps.json')
     .then(response => response.json())
@@ -16,11 +17,14 @@ fetch('maps.json')
             gridItem.appendChild(image);
             gridItem.appendChild(textOverlay);
             gridItem.addEventListener('click', () => {
-                gridContainer.removeChild(gridItem);
-                gridContainer.appendChild(gridItem);
                 gridItem.classList.add('selected');
+                gridItem.removeEventListener('click', handleClick);
+                if (gridContainerTop.contains(gridItem)) {
+                    gridContainerTop.removeChild(gridItem);
+                    gridContainerBottom.appendChild(gridItem);
+                }
             });
-            gridContainer.appendChild(gridItem);
+            gridContainerTop.appendChild(gridItem);
         });
     })
     .catch(error => {
