@@ -17,11 +17,14 @@ fetch(imagesDir)
             gridItem.classList.add('grid-item');
             const image = document.createElement('img');
             image.src = imageUrl;
-            image.alt = `Image ${index + 1}`;
+            image.alt = imageName;
             gridItem.appendChild(image);
             gridItem.addEventListener('click', () => {
                 gridContainer.removeChild(gridItem);
             });
             gridContainer.appendChild(gridItem);
         });
+    })
+    .catch(error => {
+        console.error('Error fetching images:', error);
     });
