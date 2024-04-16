@@ -52,9 +52,12 @@ function updateUI() {
         if (!lobby.bans.includes(map)) {
             const img = document.createElement("img");
             let src = `maps/${map}`;
+
+            // Check for format support
             const webpSupported = img.srcset !== undefined && img.srcset !== null;
             const avifSupported = AVIFDec !== undefined;
 
+            // Choose the appropriate format
             if (webpSupported) {
                 src += ".webp";
                 if (avifSupported) {
@@ -63,6 +66,8 @@ function updateUI() {
             }
             if (avifSupported) {
                 src += `maps/${map}.avif`;
+            } else {
+                src += ".jpg"; // Fallback to JPG if neither WebP nor AVIF is supported
             }
 
             img.src = src;
