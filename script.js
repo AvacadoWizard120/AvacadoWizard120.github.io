@@ -51,13 +51,28 @@ function updateUI() {
     maps.forEach((map, index) => {
         if (!lobby.bans.includes(map)) {
             const img = document.createElement("img");
-            img.src = `maps/${map}.jpg`; // Assuming you have images for each map in a 'maps' folder
+            let src = `maps/${map}`;
+            const webpSupported = img.srcset !== undefined && img.srcset !== null;
+            const avifSupported = AVIFDec !== undefined;
+
+            if (webpSupported) {
+                src += ".webp";
+                if (avifSupported) {
+                    src += ", ";
+                }
+            }
+            if (avifSupported) {
+                src += `maps/${map}.avif`;
+            }
+
+            img.src = src;
             img.alt = map;
             img.onclick = () => banMap(map);
             mapContainer.appendChild(img);
         }
     });
 }
+
 
 function finalizeBans() {
     // Your logic for finalizing bans
