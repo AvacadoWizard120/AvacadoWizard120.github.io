@@ -16,7 +16,7 @@ fetch('maps.json')
             textOverlay.innerText = mapName.split('.')[0];
             gridItem.appendChild(image);
             gridItem.appendChild(textOverlay);
-            gridItem.addEventListener('click', () => {
+            gridItem.addEventListener('click', function() {
                 gridItem.classList.add('selected');
                 if (gridContainerTop.contains(gridItem)) {
                     gridContainerTop.removeChild(gridItem);
