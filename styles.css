@@ -35,9 +35,9 @@
     left: 50%;
     transform: translate(-50%, -50%);
     font-family: Arial, sans-serif;
-    font-size: 14px;
+    font-size: 20px; /* Updated font size */
     font-weight: bold;
-    color: #333;
+    color: white; /* Changed text color to white */
     text-align: center;
     pointer-events: none; /* Allows clicking through the overlay */
 }
