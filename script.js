@@ -1,6 +1,6 @@
 let lobby = null;
 let currentPlayer = null;
-let maps = ["Bank", "Border", "Chalet", "Clubhouse", "Coastline", "Consulate", "Fortress", "Kafe Dostoyevsky", "Kanal", "Oregon", "Outback", "Skyscraper", "Theme Park", "Villa"];
+let maps = ["Bank", "Border", "Chalet", "Clubhouse", "Coastline", "Consulate", "EmeraldPlains", "Favela", "Fortress", "Hereford", "House", "Kafe", "Kanal", "Lair", "Nighthaven", "Oregon", "Outback", "Plane", "Skyscraper", "Stadium", "Themepark", "Tower", "Villa", "Yacht"];
 
 function joinOrCreateLobby() {
     const lobbyName = document.getElementById("lobbyName").value.trim();
