@@ -50,7 +50,7 @@
 }
 
 .divider {
-    height: 2px; /* Set the height of the divider */
-    background-color: #ccc; /* Set the color of the divider */
+    height: 20px; /* Set the height of the divider */
+    background-color: #676a6e; /* Set the color of the divider */
     margin: 10px auto; /* Add margin to center the divider */
 }
