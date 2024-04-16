@@ -2,15 +2,6 @@ body {
     font-family: Arial, sans-serif;
 }
 
-.page {
-    display: none;
-    margin: 20px;
-}
-
-.hidden {
-    display: none;
-}
-
 #mapContainer {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
