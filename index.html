@@ -21,10 +21,14 @@
         <h1>Map Ban</h1>
         <p>Current Player: <span id="currentPlayer"></span></p>
         <div id="mapContainer"></div>
+        <button onclick="banMap()">Ban Map</button>
         <button onclick="finalizeBans()">Finalize Bans</button>
     </div>
 
+    <script src="https://cdn.socket.io/4.0.1/socket.io.js"></script>
     <script>
+        const socket = io(); // Initialize Socket.IO
+
         let lobby = null;
         let currentPlayer = null;
         let maps = ["Bank", "Border", "Chalet", "Clubhouse", "Coastline", "Consulate", "EmeraldPlains", "Favela", "Fortress", "Hereford", "House", "Kafe", "Kanal", "Lair", "Nighthaven", "Oregon", "Outback", "Plane", "Skyscraper", "Stadium", "Themepark", "Tower", "Villa", "Yacht"];
@@ -36,76 +40,36 @@
                 return;
             }
 
-            if (lobby && lobby.name === lobbyName) {
-                alert("You are already in this lobby.");
-                return;
-            }
+            // Emit a "joinOrCreateLobby" event to the server
+            socket.emit("joinOrCreateLobby", lobbyName);
+        }
 
-            // Check if a lobby with the same name already exists
-            if (lobby && lobby.name !== lobbyName) {
-                alert("A lobby with this name already exists. Please choose a different name.");
-                return;
-            }
-
-            // Create a new lobby
-            lobby = {
-                name: lobbyName,
-                players: [],
-                bans: [],
-                currentPlayerIndex: 0
-            };
-
+        socket.on("lobbyJoined", (lobbyData) => {
+            lobby = lobbyData;
             document.getElementById("lobbyPage").style.display = "none";
             document.getElementById("mapBanPage").style.display = "block";
             updateUI();
-        }
+        });
 
-        function joinLobby() {
-            if (!lobby) {
-                alert("No lobby found. Please create a lobby first.");
+        socket.on("playerLeft", () => {
+            lobby = null;
+            currentPlayer = null;
+            document.getElementById("lobbyPage").style.display = "block";
+            document.getElementById("mapBanPage").style.display = "none";
+        });
+
+        function banMap() {
+            if (!lobby || currentPlayer !== socket.id) {
                 return;
             }
 
-            const lobbyName = document.getElementById("lobbyName").value.trim();
-            if (lobbyName !== lobby.name) {
-                alert("Incorrect lobby name. Please enter the correct lobby name.");
-                return;
-            }
-
-            if (lobby.players.length === 2) {
-                alert("This lobby is already full.");
-                return;
-            }
-
-            lobby.players.push(lobby.players.length + 1);
-
-            if (lobby.players.length === 2) {
-                startBanPhase();
-            }
-        }
-
-        function startBanPhase() {
-            currentPlayer = 0;
-            updateUI();
-        }
-
-        function banMap(map) {
-            if (!lobby || currentPlayer >= lobby.players.length) {
-                return;
-            }
-
-            if (lobby.bans.includes(map)) {
-                return;
-            }
-
+            const map = chooseMapToBan(); // Implement this function to choose a map to ban
             lobby.bans.push(map);
-            currentPlayer++;
+            currentPlayer = lobby.players[(lobby.players.indexOf(socket.id) + 1) % lobby.players.length];
+            updateUI();
 
-            if (currentPlayer >= lobby.players.length) {
-                finalizeBans();
-            } else {
-                updateUI();
-            }
+            // Emit a "mapBanned" event to the server
+            socket.emit("mapBanned", map);
         }
 
         function updateUI() {
@@ -115,13 +79,33 @@
             maps.forEach((map, index) => {
                 if (!lobby.bans.includes(map)) {
                     const img = document.createElement("img");
-                    img.src = `maps/${map}.jpg`; // Assuming you have images for each map in a 'maps' folder
+                    let src = `maps/${map}`;
+
+                    // Check for format support
+                    const webpSupported = img.srcset !== undefined && img.srcset !== null;
+                    const avifSupported = AVIFDec !== undefined;
+
+                    // Choose the appropriate format
+                    if (webpSupported) {
+                        src += ".webp";
+                        if (avifSupported) {
+                            src += ", ";
+                        }
+                    }
+                    if (avifSupported) {
+                        src += `maps/${map}.avif`;
+                    } else {
+                        src += ".jpg"; // Fallback to JPG if neither WebP nor AVIF is supported
+                    }
+
+                    img.src = src;
                     img.alt = map;
                     img.onclick = () => banMap(map);
                     mapContainer.appendChild(img);
                 }
             });
         }
+
 
         function finalizeBans() {
             alert("Bans finalized!");
