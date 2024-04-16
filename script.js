@@ -10,9 +10,15 @@ fetch('maps.json')
             const image = document.createElement('img');
             image.src = imageUrl;
             image.alt = mapName;
+            const textOverlay = document.createElement('div');
+            textOverlay.classList.add('text-overlay');
+            textOverlay.innerText = mapName.split('.')[0];
             gridItem.appendChild(image);
+            gridItem.appendChild(textOverlay);
             gridItem.addEventListener('click', () => {
                 gridContainer.removeChild(gridItem);
+                gridContainer.appendChild(gridItem);
+                gridItem.classList.add('selected');
             });
             gridContainer.appendChild(gridItem);
         });
