@@ -1,120 +1,13 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
     <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>R6 Siege Map Ban</title>
+    <title>Image Grid</title>
     <link rel="stylesheet" href="styles.css">
 </head>
-
 <body>
-    <div id="lobbyPage">
-        <h1>R6 Siege Map Ban</h1>
-        <label for="lobbyName">Enter Lobby Name:</label>
-        <input type="text" id="lobbyName" placeholder="Enter lobby name...">
-        <button onclick="joinOrCreateLobby()">Join/Create Lobby</button>
-    </div>
-
-    <div id="mapBanPage" style="display: none;">
-        <h1>Map Ban</h1>
-        <p>Current Player: <span id="currentPlayer"></span></p>
-        <div id="mapContainer"></div>
-        <button onclick="banMap()">Ban Map</button>
-        <button onclick="finalizeBans()">Finalize Bans</button>
-    </div>
-
-    <script src="https://cdn.socket.io/4.0.1/socket.io.js"></script>
-    <script>
-        const socket = io(); // Initialize Socket.IO
-
-        let lobby = null;
-        let currentPlayer = null;
-        let maps = ["Bank", "Border", "Chalet", "Clubhouse", "Coastline", "Consulate", "EmeraldPlains", "Favela", "Fortress", "Hereford", "House", "Kafe", "Kanal", "Lair", "Nighthaven", "Oregon", "Outback", "Plane", "Skyscraper", "Stadium", "Themepark", "Tower", "Villa", "Yacht"];
-
-        function joinOrCreateLobby() {
-            const lobbyName = document.getElementById("lobbyName").value.trim();
-            if (!lobbyName) {
-                alert("Please enter a lobby name.");
-                return;
-            }
-
-            // Emit a "joinOrCreateLobby" event to the server
-            socket.emit("joinOrCreateLobby", lobbyName);
-        }
-
-        socket.on("lobbyJoined", (lobbyData) => {
-            lobby = lobbyData;
-            document.getElementById("lobbyPage").style.display = "none";
-            document.getElementById("mapBanPage").style.display = "block";
-            updateUI();
-        });
-
-        socket.on("playerLeft", () => {
-            lobby = null;
-            currentPlayer = null;
-            document.getElementById("lobbyPage").style.display = "block";
-            document.getElementById("mapBanPage").style.display = "none";
-        });
-
-        function banMap() {
-            if (!lobby || currentPlayer !== socket.id) {
-                return;
-            }
-
-            const map = chooseMapToBan(); // Implement this function to choose a map to ban
-            lobby.bans.push(map);
-            currentPlayer = lobby.players[(lobby.players.indexOf(socket.id) + 1) % lobby.players.length];
-            updateUI();
-
-            // Emit a "mapBanned" event to the server
-            socket.emit("mapBanned", map);
-        }
-
-        function updateUI() {
-            document.getElementById("currentPlayer").textContent = `Player ${lobby.players[currentPlayer]}`;
-            const mapContainer = document.getElementById("mapContainer");
-            mapContainer.innerHTML = "";
-            maps.forEach((map, index) => {
-                if (!lobby.bans.includes(map)) {
-                    const img = document.createElement("img");
-                    let src = `maps/${map}`;
-
-                    // Check for format support
-                    const webpSupported = img.srcset !== undefined && img.srcset !== null;
-                    const avifSupported = AVIFDec !== undefined;
-
-                    // Choose the appropriate format
-                    if (webpSupported) {
-                        src += ".webp";
-                        if (avifSupported) {
-                            src += ", ";
-                        }
-                    }
-                    if (avifSupported) {
-                        src += `maps/${map}.avif`;
-                    } else {
-                        src += ".jpg"; // Fallback to JPG if neither WebP nor AVIF is supported
-                    }
-
-                    img.src = src;
-                    img.alt = map;
-                    img.onclick = () => banMap(map);
-                    mapContainer.appendChild(img);
-                }
-            });
-        }
-
-
-        function finalizeBans() {
-            alert("Bans finalized!");
-            lobby = null;
-            currentPlayer = null;
-            document.getElementById("lobbyPage").style.display = "block";
-            document.getElementById("mapBanPage").style.display = "none";
-        }
-    </script>
+    <div class="grid-container" id="gridContainer"></div>
+    <script src="script.js"></script>
 </body>
-
 </html>
