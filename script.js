@@ -18,7 +18,6 @@ fetch('maps.json')
             gridItem.appendChild(textOverlay);
             gridItem.addEventListener('click', () => {
                 gridItem.classList.add('selected');
-                gridItem.removeEventListener('click', handleClick);
                 if (gridContainerTop.contains(gridItem)) {
                     gridContainerTop.removeChild(gridItem);
                     gridContainerBottom.appendChild(gridItem);
