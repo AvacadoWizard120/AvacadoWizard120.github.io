@@ -1,4 +1,11 @@
 .grid-container {
+    display: flex;
+    flex-direction: column;
+    height: 100vh; /* Set the grid container to full height of the viewport */
+}
+
+.grid-container-top, .grid-container-bottom {
+    flex: 1; /* Divide the height evenly between the two sections */
     display: grid;
     grid-template-columns: repeat(3, 1fr);
     gap: 10px;
@@ -7,7 +14,6 @@
 }
 
 .grid-item {
-    position: relative;
     display: flex;
     justify-content: center;
     align-items: center;
@@ -35,7 +41,7 @@
     left: 50%;
     transform: translate(-50%, -50%);
     font-family: Arial, sans-serif;
-    font-size: 20px; /* Updated font size */
+    font-size: 40px; /* Updated font size */
     font-weight: bold;
     color: white; /* Changed text color to white */
     text-align: center;
